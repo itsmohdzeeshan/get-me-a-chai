@@ -9,6 +9,7 @@ const page = () => {
     const router = useRouter()
 
     useEffect(() => {
+        document.title = "Login - Get me a chai"
         if (session) {
             // BAD PRACTICE => to use react context inside a condition
             // const router = useRouter()
@@ -20,7 +21,7 @@ const page = () => {
     return (
         <div className='container mx-auto py-14 text-white flex flex-col items-center'>
 
-            <h3 className='text-center font-bold text-3xl '>Welcome To The Login Page</h3>
+            <h3 className='text-center font-bold text-3xl '>Login to get Started</h3>
 
             <div className="flex flex-col gap-2  p-10">
 
