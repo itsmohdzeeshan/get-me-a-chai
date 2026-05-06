@@ -7,8 +7,13 @@ const UserSchema = new Schema({
     username: { type: String },
     profilepic: { type: String },
     coverpic: { type: String },
-    razorpayid: {type: String},
-    razorpaysecret: {type: String}
+    razorpayid: { type: String },
+    razorpaysecret: { type: String },
+
+    // New field for Google OAuth
+    googleRefreshToken: { type: String },
+    googleAccessToken: {type: String}
+
 }, { timestamps: true })
 
 const User = mongoose.models.User || model("User", UserSchema)
