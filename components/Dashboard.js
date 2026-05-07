@@ -9,21 +9,26 @@ import { motion } from 'framer-motion'
 const Dashboard = () => {
 
     const [form, setform] = useState({})
+    const [isLoading, setIsLoading] = useState(true)
     const { data: session } = useSession()
     const router = useRouter()
+
+    const getData = async () => {
+        setIsLoading(true)
+        let user = await fetchUser(session.user.name)
+        setform(user || {})
+        setIsLoading(false)
+    }
 
     useEffect(() => {
         if (!session) {
             router.push('/login')
         } else {
-            getData()
+            setTimeout(() => {
+                getData()
+            }, 0)
         }
     }, [router, session])
-
-    const getData = async () => {
-        let user = await fetchUser(session.user.name)
-        setform(user || {})
-    }
 
     const handleSubmit = async () => {
         await updateProfile(form, session.user.name)
@@ -58,6 +63,13 @@ const Dashboard = () => {
                     Welcome to your Dashboard 🚀
                 </motion.h3>
 
+
+                {isLoading && (
+                    <div className="max-w-2xl mx-auto mb-6 p-4 rounded-xl border border-white/10 bg-white/5 animate-pulse">
+                        Loading dashboard data...
+                    </div>
+                )}
+
                 {/* FORM CARD */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -66,7 +78,7 @@ const Dashboard = () => {
                     className="max-w-2xl mx-auto backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl p-6 shadow-lg"
                 >
 
-                    <form action={handleSubmit} className="flex flex-col gap-5">
+                    <form action={handleSubmit} className="flex flex-col gap-5" style={{ opacity: isLoading ? 0.6 : 1 }}>
 
                         {/* INPUT COMPONENT */}
                         {[

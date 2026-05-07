@@ -1,7 +1,6 @@
 "use client"
 
 import React from 'react'
-import Script from 'next/script'
 import { fetchPayments, fetchUser, initiate } from '@/actions/useractions'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -26,16 +25,19 @@ const PaymentPage = ({ username }) => {
 
     const [currentUser, setCurrentUser] = useState({})
     const [payments, setpayments] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         fetchdata()
     }, [])
 
     const fetchdata = async () => {
+        setIsLoading(true)
         let u = await fetchUser(username)
-        setCurrentUser(u)
+        setCurrentUser(u || {})
         let dbPayment = await fetchPayments(username)
-        setpayments(dbPayment)
+        setpayments(dbPayment || [])
+        setIsLoading(false)
     }
 
 
@@ -151,6 +153,12 @@ const PaymentPage = ({ username }) => {
             {/* <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy='beforeInteractive'> */}
             {/* </Script> */}
 
+            {isLoading ? (
+                <div className="w-[90%] md:w-[80%] mx-auto mt-10 p-8 rounded-xl border border-white/10 bg-white/5 animate-pulse text-center">
+                    Loading page data...
+                </div>
+            ) : (
+            <>
             <div className="cover relative border border-white">
                 <img className='object-cover w-full h-[350px]'
                     src={currentUser.coverpic}
@@ -182,7 +190,7 @@ const PaymentPage = ({ username }) => {
 
                                 return <li key={e._id} className='flex gap-1 items-start text-sm md:text-base'>
                                     <img className='items-start shrink-0' width={25} src="avatar.gif" alt="" />
-                                    <span>{e.name} donated <span className='font-bold'>₹{e.amount}</span> with a <span className='font-bold'>message</span> "{e.message}"</span>
+                                    <span>{e.name} donated <span className='font-bold'>₹{e.amount}</span> with a <span className='font-bold'>message</span> &quot;{e.message}&quot;</span>
                                 </li>
                             })}
 
@@ -222,6 +230,8 @@ const PaymentPage = ({ username }) => {
                 </div>
 
             </div>
+            </>
+            )}
 
         </>
     )
